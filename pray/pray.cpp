@@ -10,11 +10,15 @@ CPray::CPray()
 	R = rand() % 256;
 	G = rand() % 256;
 	B = rand() % 256;
+	hPen = CreatePen(PS_SOLID, 2, RGB(R, G, B));
+	hBrush = CreateSolidBrush(RGB(R, G, B));
 }
 
 
 CPray::~CPray()
 {
+	DeleteObject(hPen);
+	DeleteObject(hBrush);
 }
 
 void CPray::OnFrameMove(const float c_fElapsedTime)
@@ -24,17 +28,7 @@ void CPray::OnFrameMove(const float c_fElapsedTime)
 
 void CPray::OnFrameRender(HDC hdc)
 {
-
-	hPen = CreatePen(PS_SOLID, 2, RGB(R, G, B));
-	hBrush = CreateSolidBrush(RGB(R, G, B));
-
 	oldPen = (HPEN)SelectObject(hdc, hPen);
 	oldBrush = (HBRUSH)SelectObject(hdc, hBrush);
 	Ellipse(hdc, m_iX - (m_iR / 2), m_iY - (m_iR / 2), m_iX + (m_iR / 2), m_iY + (m_iR / 2));
-
-	SelectObject(hdc, oldPen);
-	SelectObject(hdc, oldBrush);
-
-	DeleteObject(hPen);
-	DeleteObject(hBrush);
 }
