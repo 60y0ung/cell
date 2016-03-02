@@ -33,12 +33,17 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 	WndClass.style = CS_HREDRAW | CS_VREDRAW;
 	RegisterClass(&WndClass);
 
-	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, (HMENU)NULL, hInstance, NULL);
+	hWnd = CreateWindow(lpszClass, lpszClass, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT
+		, WINSIZEX, WINSIZEY, NULL, (HMENU)NULL, hInstance, NULL);
 
 	ShowWindow(hWnd, nCmdShow);
 
 	DWORD dwTime = GetTickCount();
-	DWORD dwCount = 1000;
+
+	AllocConsole();
+	freopen("CONIN$", "r", stdin);
+	freopen("CONOUT$", "w", stdout);
+	freopen("CONOUT$", "w", stderr);
 
 	bool on = false;
 
@@ -53,21 +58,23 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpszCmd
 		}
 		else
 		{
-			if (dwTime + dwCount < GetTickCount())
-			{
-				dwTime = GetTickCount();
-				on = true;
-			}
 
 			if (m_pGame != NULL)
 			{
+				if (dwTime <= GetTickCount())
+				{
+					dwTime = GetTickCount() + 10;
+
 				m_pGame->Move();
-				m_pGame->Draw(on);
-				on = false;
+				m_pGame->Draw();
+				}
+
 			}
 		}
 
 	}
+
+	FreeConsole();
 
 	m_pGame->Destroy();
 	return Message.wParam;
